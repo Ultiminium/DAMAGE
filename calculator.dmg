@@ -1,0 +1,26 @@
+| DAMAGE Calculator v5.2
+
+@var+
+     expression+0-
+     result+0-
+@-
+
+@gui,var+
+@gui:winname"DAMAGE Calculator"
+@gui:winsize"420:250"
+@gui:text+Expression -:pos+20,190-
+@gui:input:writableelement:text+e.g. 2^10 or 10 * 5-:1
+@gui:text+Result -:pos+20,120-
+@gui:input:writableelement:text+0-:2
+@gui:pressable"name:Calculate":pos+155,40-
+if, pressable+Calculate-:true
+     @fetch+
+     fetch.+gui:1-$+@var/expression-
+@-&
+@math,var+
++(expression)-
+@-&
+@fetch+
+fetch.+@var/__mathresult__-$+gui:2-
+@-#
+@-

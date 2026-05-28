@@ -1,0 +1,255 @@
+| THE DUNGEON - A DAMAGE Adventure
+
+@addfunc+
+@print+
+     +================================-
+@-
+@addfunc:createname"divider"
+@---
+
+@addfunc+
+@print,var+
+     +HP: (hp)  Gold: (gold)  Weapon: (weapon)-
+@-
+@addfunc:createname"stats"
+@---
+
+@var+
+     hp+20-
+     gold+0-
+     weapon+fists-
+@-
+
+@divider+
+@-
+@print+
+     +         THE DUNGEON-
+@-
+@print+
+     +      A DAMAGE Adventure-
+@-
+@divider+
+@-
+@print+
+     + -
+@-
+@print+
+     +You wake up on a cold stone floor.-
+@-
+@print+
+     +Your head is pounding. It is dark.-
+@-
+@print+
+     +Two hallways stretch before you.-
+@-
+@print+
+     + -
+@-
+@stats+
+@-
+@print+
+     + -
+@-
+
+| ── Choice 1 ────────────────────────────────────────────
+
+@user,print+
+     +Which way? (left/right):-
+@var:create+path-
+@-
+
+@print,var+
+if, (path) = left
+     @+You go left. Something smells terrible.-
+if, (path) = right
+     @+You go right. Water drips somewhere ahead.-
+if, (path) = left
+     @+A GOBLIN leaps out!-
+if, (path) = right
+     @+You spot a wooden chest.-
+@-
+
+| ── Choice 2 ────────────────────────────────────────────
+
+@user,print+
+     +What do you do? left=(fight/run)  right=(open/leave):-
+@var:create+c2-
+@-
+
+| left + fight
+if, (path) = left
+if, (c2) = fight
+@print+
+     +You fight! You beat the goblin down.-
+@-
+
+if, (path) = left
+if, (c2) = fight
+@dyn,var+
+@dyn:(gold) = (gold)+10
+@-
+
+if, (path) = left
+if, (c2) = fight
+@dyn,var+
+@dyn:(weapon) = goblin club
+@-
+
+if, (path) = left
+if, (c2) = fight
+@print,var+
+     +Loot: 10 gold and a goblin club. Gold: (gold)-
+@-
+
+| left + run
+if, (path) = left
+if, (c2) = run
+@dyn,var+
+@dyn:(hp) = (hp)-5
+@-
+
+if, (path) = left
+if, (c2) = run
+@print,var+
+     +You bolt. The goblin nicks you for 5. HP: (hp)-
+@-
+
+| right + open
+if, (path) = right
+if, (c2) = open
+@dyn,var+
+@dyn:(gold) = (gold)+25
+@-
+
+if, (path) = right
+if, (c2) = open
+@dyn,var+
+@dyn:(hp) = (hp)+5
+@-
+
+if, (path) = right
+if, (c2) = open
+@print,var+
+     +Jackpot! 25 gold and a healing potion. HP: (hp) Gold: (gold)-
+@-
+
+| right + leave
+if, (path) = right
+if, (c2) = leave
+@print+
+     +You walk past. Probably a trap anyway.-
+@-
+
+| ── Boss Door ───────────────────────────────────────────
+
+@divider+
+@-
+@print+
+     +Both paths lead to a massive iron door.-
+@-
+@print+
+     +Something huge breathes on the other side.-
+@-
+@divider+
+@-
+@stats+
+@-
+@print+
+     + -
+@-
+
+@user,print+
+     +What do you do? (enter/sneak/run):-
+@var:create+boss-
+@-
+
+| enter
+if, (boss) = enter
+@print+
+     +You kick it open. A CAVE TROLL fills the doorway.-
+@-
+
+if, (boss) = enter
+@dyn,var+
+@dyn:(hp) = (hp)-8
+@-
+
+if, (boss) = enter
+@print,var+
+     +It slugs you for 8. You swing your (weapon) back!-
+@-
+
+if, (boss) = enter
+@dyn,var+
+@dyn:(gold) = (gold)+50
+@-
+
+if, (boss) = enter
+@print,var+
+     +You survive! Troll drops 50 gold and flees. HP: (hp) Gold: (gold)-
+@-
+
+if, (boss) = enter
+@print+
+     +YOU WIN. THE DUNGEON IS CLEARED.-
+@-
+
+| sneak
+if, (boss) = sneak
+@print+
+     +You squeeze through a crack in the wall.-
+@-
+
+if, (boss) = sneak
+@print+
+     +The troll never sees you. You emerge into daylight.-
+@-
+
+if, (boss) = sneak
+@dyn,var+
+@dyn:(gold) = (gold)+5
+@-
+
+if, (boss) = sneak
+@print,var+
+     +You find 5 gold near the exit. Sneak money. Gold: (gold)-
+@-
+
+if, (boss) = sneak
+@print+
+     +YOU ESCAPED. Cleverly.-
+@-
+
+| run
+if, (boss) = run
+@dyn,var+
+@dyn:(hp) = (hp)-10
+@-
+
+if, (boss) = run
+@print,var+
+     +You sprint. The door bursts open and the troll crushes you. HP: (hp)-
+@-
+
+if, (boss) = run
+@print+
+     +YOU SURVIVED. Technically.-
+@-
+
+| ── End ─────────────────────────────────────────────────
+
+@print+
+     + -
+@-
+@divider+
+@-
+@stats+
+@-
+@print+
+     +Thanks for playing THE DUNGEON-
+@-
+@print+
+     +Made in DAMAGE.-
+@-
+@divider+
+@-

@@ -1,0 +1,295 @@
+| THE DAMAGE ADVENTURE
+| Tests: vars, conditions, other if/other, loops, user input,
+|        random, &, ?, user functions, dyn, fetch, text, clear
+
+@addfunc+
+@print+
+     +========================================-
+@-
+@addfunc:createname"div"
+@---
+
+@addfunc+
+@print,var+
+     +HP: (hp) | Gold: (gold) | Level: (level)-
+@-
+@addfunc:createname"hud"
+@---
+
+@addfunc+
+@print+
+     +You feel the ground shake...-
+@-
+@print+
+     +A wild enemy appears!-
+@-
+@addfunc:createname"encounter"
+@---
+
+@var+
+     hp+100-
+     gold+0-
+     level+1-
+     name+hero-
+     attempts+0-
+     lucky+0-
+@-
+
+@clear+
+@-
+
+@div+
+@-
+@print+
+     +    THE DAMAGE ADVENTURE-
+@-
+@print+
+     +    A complete feature test-
+@-
+@div+
+@-
+
+@user,print+
+     +What is your name, adventurer?-
+@var:create+name-
+@-
+
+@text+
+text:capital"@var/name/a":1
+@-
+
+@print,var+
+     +Welcome, (name)!-
+@-
+@+Your quest begins.-?@+Destiny awaits.-?@+Glory is near.-
+
+@div+
+@-
+@print+
+     +CHAPTER 1: THE DARK FOREST-
+@-
+@div+
+@-
+
+@encounter+
+@-
+
+@user,print+
+     +Do you fight or run? (fight/run):-
+@var:create+choice-
+@-
+
+@print,var+
+if, (choice) = fight
+     @+You charge into battle! You win! Gold earned.-
+other if, (choice) = run
+     @+You flee into the bushes! You escape.-
+other,
+     @+You stand there confused. The enemy leaves.-
+@-
+
+@dyn,var+
+if, (choice) = fight
+@dyn:(gold) = (gold)+25
+@-
+@dyn,var+
+if, (choice) = fight
+@dyn:(hp) = (hp)-15
+@-
+@dyn,var+
+if, (choice) = run
+@dyn:(hp) = (hp)-5
+@-
+
+@hud+
+@-
+
+@div+
+@-
+@print+
+     +CHAPTER 2: THE MERCHANT-
+@-
+@div+
+@-
+
+@print+
+     +A merchant appears with a mysterious offer.-
+@-
+
+@user,print+
+     +Buy a health potion for 20 gold? (yes/no):-
+@var:create+buy-
+@-
+
+@print,var+
+if, (buy) = yes
+if, (gold) > 19
+     @+You drink the potion. HP restored!-
+other if, (buy) = yes
+     @+Not enough gold! The merchant scoffs.-
+other,
+     @+You walk away. The merchant shrugs.-
+@-
+
+@dyn,var+
+if, (buy) = yes
+if, (gold) > 19
+@dyn:(gold) = (gold)-20
+@-
+@dyn,var+
+if, (buy) = yes
+if, (gold) > 19
+@dyn:(hp) = (hp)+30
+@-
+
+@div+
+@-
+@print+
+     +CHAPTER 3: THE MATH WIZARD-
+@-
+@div+
+@-
+
+@print+
+     +A wizard blocks your path.-
+@-
+@print,math+
+     +The wizard asks: What is %2^8%? 2^8 = %-
+@-
+
+@user,print+
+     +Your answer:-
+@var:create+answer-
+@-
+
+@print,var+
+if, (answer) = 256
+     @+CORRECT! The wizard bows to (name).-
+other if, (answer) > 256
+     @+Too high. The wizard zaps you.-
+other,
+     @+Too low. The wizard sighs.-
+@-
+
+@dyn,var+
+if, (answer) = 256
+@dyn:(gold) = (gold)+50
+@-
+@dyn,var+
+if, (answer) = 256
+@dyn:(level) = (level)+1
+@-
+@dyn,var+
+if, (answer) = 256
+@dyn:(lucky) = 1
+@-
+@dyn,var+
+if, (answer) > 256
+@dyn:(hp) = (hp)-20
+@-
+@dyn,var+
+if, (answer) < 256
+@dyn:(hp) = (hp)-10
+@-
+
+@hud+
+@-
+
+@div+
+@-
+@print+
+     +CHAPTER 4: THE LOOP DUNGEON-
+@-
+@div+
+@-
+
+@print+
+     +You fight through 3 waves of enemies.-
+@-
+
+@loop,print+
+     +Enemy defeated! +10 gold-
+@loop:3
+@-
+
+@dyn,var+
+@dyn:(gold) = (gold)+30
+@-
+
+@print,var+
+     +3 enemies defeated. Gold: (gold)-
+@-
+
+@div+
+@-
+@print+
+     +CHAPTER 5: THE RANDOM ORACLE-
+@-
+@div+
+@-
+
+@print+
+     +The oracle speaks:-
+@-
+@+You are destined for greatness.-?@+Your future is uncertain.-?@+Chaos follows you.-?@+The stars favor you today.-
+
+@print,random+
+     @()+1-100-
+@var:create+lucky_num-
+@-
+
+@print,var+
+     +Your lucky number is (lucky_num).-
+@-
+
+@div+
+@-
+@print+
+     +EPILOGUE-
+@-
+@div+
+@-
+
+@hud+
+@-
+
+@text+
+@text:length+@var/name-
+@var:create+namelen-
+@-
+
+@print,var+
+     +Your name has (namelen) letters.-
+@-
+
+@print,var+
+if, (lucky) = 1
+     @+(name): True hero. The wizard was impressed.-
+other,
+     @+(name): Still learning. The wizard was not impressed.-
+@-
+
+@print,var+
+if, (hp) > 80
+     @+Unscathed. Impressive.-
+other if, (hp) > 40
+     @+Survived, barely.-
+other,
+     @+Barely standing. But standing.-
+@-
+
+@output,var+
+     +Hero: (name) | HP: (hp) | Gold: (gold) | Level: (level)-
+@output:createname"adventure_result.txt"
+@-
+
+@div+
+@-
+@print+
+     +THE END. Results saved to outputs/adventure_result.txt-
+@-
+@print+
+     +Made in DAMAGE v6.-
+@-
+@div+
+@-

@@ -1,0 +1,364 @@
+| fred.dmg - The Epic Tale of Fred the Fish
+| A DAMAGE v4 Production
+| Fred cannot be forgotten.
+
+| ── User Functions ──────────────────────────────────────────
+
+@addfunc+
+@print+
+     +========================================-
+@-
+@addfunc:createname"divider"
+@---
+
+@addfunc+
+@print,var+
+     +FRED STATUS: HP=(hp) | Gold=(gold) | Tank=(tank) | Score=(score)-
+@-
+@addfunc:createname"fredstatus"
+@---
+
+@addfunc+
+@print+
+     +Fred blows a bubble. ..o O-
+@-
+@addfunc:createname"bubble"
+@---
+
+| ── Variables ───────────────────────────────────────────────
+
+@var+
+     hp+100-
+     gold+0-
+     tank+small-
+     fedtoday+0-
+     name+stranger-
+     score+0-
+@-
+
+| ── Title ───────────────────────────────────────────────────
+
+@divider+
+@-
+@print+
+     +    THE EPIC TALE OF FRED THE FISH-
+@-
+@print+
+     +         A DAMAGE v4 Production-
+@-
+@divider+
+@-
+@bubble+
+@-
+@print+
+     +You approach a fish tank.-
+@-
+@print+
+     +Inside, a single goldfish stares at you.-
+@-
+@print+
+     +His name is Fred.-
+@-
+@bubble+
+@-
+
+| ── Chapter 1 ───────────────────────────────────────────────
+
+@divider+
+@-
+@print+
+     +CHAPTER 1: WHO ARE YOU?-
+@-
+@divider+
+@-
+
+@user,print+
+     +Fred wants to know your name:-
+@var:create+name-
+@-
+
+@print,var+
+     +Fred looks at (name) with his big fish eyes.-
+@-
+@print,var+
+     +(name)... Fred approves.-
+@-
+@bubble+
+@-
+
+| ── Chapter 2 ───────────────────────────────────────────────
+
+@divider+
+@-
+@print+
+     +CHAPTER 2: FEED FRED-
+@-
+@divider+
+@-
+
+@print+
+     +Fred is hungry. He is always hungry.-
+@-
+@print+
+     +You have 3 pieces of food.-
+@-
+
+@user,print+
+     +How many pieces do you feed Fred? (1/2/3):-
+@var:create+food-
+@-
+
+@print,var+
+if, (food) = 1
+     @+Fred eats one piece. Sad.-
+other if, (food) = 2
+     @+Fred eats two pieces. Happy wiggle!-
+other if, (food) = 3
+     @+Fred eats ALL THREE. Fred is spherical.-
+other,
+     @+Fred does not understand. Fred eats the number instead.-
+@-
+
+@dyn,var+
+if, (food) = 1
+@dyn:(hp) = (hp)+5
+@-
+@dyn,var+
+if, (food) = 2
+@dyn:(hp) = (hp)+15
+@-
+@dyn,var+
+if, (food) = 3
+@dyn:(hp) = (hp)+10
+@-
+@dyn,var+
+if, (food) ~ 0
+@dyn:(fedtoday) = 1
+@-
+
+@fredstatus+
+@-
+@bubble+
+@-
+
+| ── Chapter 3 ───────────────────────────────────────────────
+
+@divider+
+@-
+@print+
+     +CHAPTER 3: THE MATH TRIAL-
+@-
+@divider+
+@-
+
+@print+
+     +Fred has devised a test.-
+@-
+@print+
+     +He will only respect those who can do basic math.-
+@-
+@bubble+
+@-
+
+@user,print,math+
+     +Fred asks: What is 7 (+) 8?:-
+@var:create+answer-
+@-
+
+@print,var+
+if, (answer) = 15
+     @+CORRECT! Fred respects (name). Gold plus 50, Score plus 100-
+other if, (answer) > 15
+     @+Too high. Fred is disappointed. HP minus 10-
+other,
+     @+Too low. Fred sighs with his gills. HP minus 5-
+@-
+
+@dyn,var+
+if, (answer) = 15
+@dyn:(gold) = (gold)+50
+@-
+
+@dyn,var+
+if, (answer) = 15
+@dyn:(score) = (score)+100
+@-
+
+@dyn,var+
+if, (answer) > 15
+@dyn:(hp) = (hp)-10
+@-
+
+@dyn,var+
+if, (answer) < 15
+@dyn:(hp) = (hp)-5
+@-
+
+@fredstatus+
+@-
+@bubble+
+@-
+
+| ── Chapter 4 ───────────────────────────────────────────────
+
+@divider+
+@-
+@print+
+     +CHAPTER 4: UPGRADE FRED'S TANK-
+@-
+@divider+
+@-
+
+@print,var+
+     +Fred lives in a (tank) tank. He dreams of something bigger.-
+@-
+
+@user,print+
+     +Upgrade Fred's tank for 40 gold? (yes/no):-
+@var:create+upgrade-
+@-
+
+@print,var+
+if, (upgrade) = yes
+if, (gold) > 39
+     @+You upgrade to a large luxury tank! Worth every coin.-
+other if, (upgrade) = yes
+     @+Not enough gold. Fred understands. Fred is sad.-
+other,
+     @+Fred accepts his small tank. Fred is a simple fish.-
+@-
+
+@dyn,var+
+if, (upgrade) = yes
+if, (gold) > 39
+@dyn:(gold) = (gold)-40
+@-
+
+@dyn,var+
+if, (upgrade) = yes
+if, (gold) > 39
+@dyn:(tank) = large luxury
+@-
+
+@dyn,var+
+if, (upgrade) = yes
+if, (gold) > 39
+@dyn:(score) = (score)+50
+@-
+
+@fredstatus+
+@-
+@bubble+
+@-
+
+| ── Chapter 5 ───────────────────────────────────────────────
+
+@divider+
+@-
+@print+
+     +CHAPTER 5: THE FINAL QUESTION-
+@-
+@divider+
+@-
+
+@print+
+     +Fred swims to the glass.-
+@-
+@print+
+     +He presses his tiny fish face against it.-
+@-
+@print+
+     +He has one final question.-
+@-
+@bubble+
+@-
+
+@user,print+
+     +Fred asks: Do you love him? (yes/no):-
+@var:create+love-
+@-
+
+@print,var+
+if, (love) = yes
+     @+(name) loves Fred. Fred does three laps of pure joy.-
+other,
+     @+(name) does not love Fred. Fred sinks slowly to the bottom.-
+@-
+
+@dyn,var+
+if, (love) = yes
+@dyn:(score) = (score)+200
+@-
+
+@dyn,var+
+if, (love) = yes
+@dyn:(hp) = (hp)+20
+@-
+
+@dyn,var+
+if, (love) ~ yes
+@dyn:(hp) = (hp)-30
+@-
+
+@bubble+
+@-
+if, (love) = yes
+@bubble+
+@-
+if, (love) = yes
+@bubble+
+@-
+
+| ── Epilogue ────────────────────────────────────────────────
+
+@divider+
+@-
+@print+
+     +EPILOGUE-
+@-
+@divider+
+@-
+
+@fredstatus+
+@-
+
+@print,var+
+if, (score) > 299
+     @+(name) is Fred's favourite human ever.-
+other if, (score) > 149
+     @+(name) was okay. Fred gives a 6 out of 10.-
+other,
+     @+Fred has already forgotten (name). Fred has a 3 second memory.-
+@-
+
+@print,var+
+if, (hp) > 90
+     @+Fred is thriving. Look at him go.-
+other if, (hp) > 50
+     @+Fred is doing alright. Could be better.-
+other,
+     @+Fred needs a nap. Fred has had a day.-
+@-
+
+@print,var+
+if, (fedtoday) = 1
+     @+At least (name) fed Fred today. That counts for something.-
+other,
+     @+(name) did not feed Fred. Fred noticed. Fred always notices.-
+@-
+
+@divider+
+@-
+@print+
+     +THE END-
+@-
+@print+
+     +Fred blows one final bubble.-
+@-
+@bubble+
+@-
+@print+
+     +Made in DAMAGE v4. Fred lives on.-
+@-
+@divider+
+@-
