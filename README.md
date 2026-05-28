@@ -18,8 +18,8 @@ sudo mv damage /usr/local/bin/damage
 Requires Python 3.8+
 
 ```bash
-git clone https://github.com/yourusername/damage
-cd damage/damage_pkg
+git clone https://github.com/Ultiminium/DAMAGE
+cd DAMAGE/damage_pkg
 pip install -e .
 ```
 
