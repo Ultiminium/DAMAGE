@@ -1,26 +1,29 @@
 # DAMAGE
 
-DAMAGE is a programming language with its own syntax, CLI, and GUI support. Programs are written in `.dmg` files and run with the `damage` command.
+DAMAGE is a programming language designed around how you naturally think. No type errors. No confusing syntax. Just write what you mean.
+
+Programs are written in `.damg` files and run with the `damage` command.
 
 ---
 
 ## Installing
 
-### Standalone binary (no Python needed)
-Download the binary from Releases, then:
+### Standalone binary (recommended)
+Download the binary from [Releases](https://github.com/Ultiminium/DAMAGE/releases), then:
 
 ```bash
 chmod +x damage
 sudo mv damage /usr/local/bin/damage
 ```
 
-### From source
-Requires Python 3.8+
+### Build from source
+Requires [Rust](https://rustup.rs):
 
 ```bash
 git clone https://github.com/Ultiminium/DAMAGE
-cd DAMAGE/damage_pkg
-pip install -e .
+cd DAMAGE/damage-rs
+cargo build --release
+sudo mv target/release/damage /usr/local/bin/damage
 ```
 
 ---
@@ -28,16 +31,17 @@ pip install -e .
 ## Running a program
 
 ```bash
-damage yourfile.dmg
+damage yourfile.damg
 ```
 
 ---
 
 ## The basics
 
-Every block in DAMAGE opens with `@functionname+` and closes with `@-`. Content inside a block is indented 5 spaces. Anything after `|` on a line is a comment.
+Every block opens with `@functionname+` and closes with `@-`. Content inside is indented 5 spaces. Anything after `|` is a comment.
 
 ```
+| this is a comment
 @print+
      +Hello world-
 @-
@@ -49,7 +53,7 @@ Every block in DAMAGE opens with `@functionname+` and closes with `@-`. Content 
 
 ```
 @var+
-     name+Spencer-
+     name+User-
      score+0-
      isAlive=1
 @-
@@ -57,14 +61,8 @@ Every block in DAMAGE opens with `@functionname+` and closes with `@-`. Content 
 
 Booleans use `=` instead of `+value-`. `1` is on, `0` is off.
 
-List variables are just a variable with commas in the value — useful for displaying a bunch of related things in one call:
-```
-@var+
-     groceries+apples,bananas,milk,bread-
-@-
-```
-
 To change a variable mid-program:
+
 ```
 @dyn,var+
 @dyn:(score) = (score)+10
@@ -75,7 +73,7 @@ To change a variable mid-program:
 
 ## Referencing variables
 
-The position of `var` in the function list determines how many parens you wrap around the name.
+The position of `var` in the function list determines how many parens you use:
 
 ```
 @print,var+
@@ -83,17 +81,13 @@ The position of `var` in the function list determines how many parens you wrap a
 @-
 ```
 
-`print` is position 0, `var` is position 1, so one layer of parens.
-
 ```
 @print,math,var+
      +((score)) (+) 1-
 @-
 ```
 
-`var` is now position 2, so two layers. `math` is position 1, so `(+)` for the operator.
-
-DAMAGE is forgiving about this — if it recognizes the content as a variable name it'll resolve it regardless of depth.
+`var` at position 2 → `((score))`. `math` at position 1 → `(+)`.
 
 ---
 
@@ -105,7 +99,7 @@ DAMAGE is forgiving about this — if it recognizes the content as a variable na
 @-
 
 @print,var+
-     +Hello (name)-
+     +Hello (name)!-
 @-
 
 @print,math+
@@ -113,13 +107,19 @@ DAMAGE is forgiving about this — if it recognizes the content as a variable na
 @-
 ```
 
-Inline math with `%` — define the expression between `%%`, result appears at the next standalone `%`:
+Inline math with `%` — define between `%%`, result placed at the next `%`:
+
 ```
 @print,math+
-     +2(+)2 = %2 (+) 2%? Correct, the answer is %-
+     +2^10 = %2^10%? The answer is %-
 @-
 ```
-Output: `2+2 = ? Correct, the answer is 4`
+
+Random OR — picks one randomly:
+
+```
+@+Good job!-?@+Well done!-?@+Amazing!-
+```
 
 ---
 
@@ -133,36 +133,35 @@ Output: `2+2 = ? Correct, the answer is 4`
 
 Operators: `+ - * / ^`
 
-Exponents are right-to-left like standard math: `2^3^2 = 512` (2^(3^2) = 2^9)
+Exponents are right-to-left: `2^3^2 = 512` (= 2^9)
 
-Numbers >= 10^10 automatically display in scientific notation. Numbers too large to compute display as `too large to display`.
+Results above 10^10 display in scientific notation. Results too large display as `too large to display`.
 
 ---
 
 ## Conditions
 
 ```
-if, (score) = 5
+if, (score) = 100
 @print+
      +Perfect!-
 @-
-other if, (score) > 5
+other if, (score) > 50
 @print+
-     +Too high-
+     +Not bad.-
 @-
 other,
 @print+
-     +Too low-
+     +Keep trying.-
 @-
 ```
 
-First match wins — once a branch fires the rest are skipped.
-
 Operators: `=` `<` `>` `~` (not equal)
 
-Chain multiple conditions with AND using commas:
+Chained AND:
+
 ```
-if, (score) = 5,(lives) > 0,(name) = Spencer
+if, (score) = 100,(lives) > 0
 ```
 
 ---
@@ -176,16 +175,16 @@ if, (score) = 5,(lives) > 0,(name) = Spencer
 @-
 ```
 
-`@loop:0` skips entirely. Conditional count:
+Variable loop count:
+
 ```
 @loop,print+
      +Hello!-
-if, (score) = 5
-@loop:3
-if, (score) ~ 5
-@loop:0
+@loop:(times)
 @-
 ```
+
+`@loop:0` skips entirely.
 
 ---
 
@@ -198,41 +197,32 @@ if, (score) ~ 5
 @-
 ```
 
-Whatever the user types gets stored in `name`. If they type nothing, the value is `0`.
+With validation — re-prompts until valid:
+
+```
+@user,print+
+     +Enter a number:-
+@user:expect"n"
+@var:create+num-
+@-
+```
+
+`"n"` = numbers only, `"l"` = letters only.
 
 ---
 
 ## Random
 
-Pick from a list:
 ```
 @print,random+
      @()+1,2,3,4,5-
 @var:create+pick-
 @-
-```
 
-Pick from a range:
-```
 @print,random+
      @()+1-100-
 @var:create+pick-
 @-
-```
-
-Random OR — picks one of these randomly wherever you put it:
-```
-@+Good job!-?@+Well done!-?@+Amazing!-
-```
-
----
-
-## Multi-statement
-
-`&` lets a condition trigger multiple things in order:
-```
-if, (score) = 5
-     @+You win!-&@+Score saved.-&@+Well done.-
 ```
 
 ---
@@ -251,26 +241,13 @@ if, (score) = 5
 @-
 ```
 
-Functions are saved as `.func` files in `damage/usrfunc/`. They share variables with the caller. You can't name a function the same as a built-in.
-
----
-
-## File output
-
-```
-@output,var+
-     +(result)-
-@output:createname"results.txt"
-@-
-```
-
-Saved to `damage/outputs/`.
+Functions are saved as `.func` files. Variables are shared with the caller.
 
 ---
 
 ## Fetch
 
-Fetch pipes data from one place to another using `$`. Left side is the source, right side is the destination.
+Pipe data from anywhere to anywhere using `$`:
 
 ```
 @fetch+
@@ -285,8 +262,6 @@ fetch.+/path/in.txt-$+@var/data-
 
 ## Block chaining
 
-Chain multiple blocks together with `@-&`. End the chain with `@-#`.
-
 ```
 if, pressable+Calculate-:true
      @fetch+
@@ -300,30 +275,68 @@ if, pressable+Calculate-:true
 @-#
 ```
 
+`@-&` = close and continue. `@-#` = end of chain.
+
 ---
 
 ## Text operations
 
 ```
+| get length
 @text+
 @text:length+@var/name-
 @var:create+namelen-
 @-
 
+| capitalize letter at position
 @text+
 text:capital"@var/name/s":1
 @-
 
+| lowercase letter at position
 @text+
 text:lower"@var/name/S":1
 @-
 
+| error if exceeds limit
 @text+
 text:maxlength"15"
 @-
+
+| check if number or letters
+@text+
+@text:length+@var/input-
+text:check"n"
+@var:create+isnum-
+@-
 ```
 
-`@text:length` also accepts `/file/path` and `@user` as sources.
+---
+
+## Encryption
+
+```
+| one-way (no decryption)
+@enc,var+
+     +(password)-
+@var:create+encrypted-
+@-
+
+| two-way
+@enc,var+
+     +(password)-
+@enc:password"mykey"
+@var:create+secured-
+@-
+
+| decrypt
+@dec,var+
+     @dec:@var/secured/mykey
+@var:create+original-
+@-
+```
+
+The password is never stored.
 
 ---
 
@@ -333,15 +346,26 @@ text:maxlength"15"
 @gui,var+
 @gui:winname"My App"
 @gui:winsize"800:600"
-@gui:text+Hello -:pos+100,300-
+@gui:text+Hello-:pos+100,300-
 @gui:input:writableelement:text+Type here...-:1
 @gui:pressable"name:Click Me":pos+300,200-
 if, pressable+Click Me-:true
-     @+Button was clicked!-
+     @+Button clicked!-
 @-
 ```
 
-Coordinates start at the bottom-left. X goes right, Y goes up. Elements have IDs (`:1`, `:2`) for referencing them with fetch.
+Coordinates: origin bottom-left, X right, Y up.
+
+---
+
+## File output
+
+```
+@output,var+
+     +(result)-
+@output:createname"results.txt"
+@-
+```
 
 ---
 
@@ -349,11 +373,9 @@ Coordinates start at the bottom-left. X goes right, Y goes up. Elements have IDs
 
 ```
 @import+
-     +utils.dmg-
+     +utils.damg-
 @-
 ```
-
-Runs another `.dmg` file in the same context — variables and functions carry over.
 
 ---
 
@@ -366,9 +388,20 @@ Runs another `.dmg` file in the same context — variables and functions carry o
 
 ---
 
+## Packages
+
+```
+damage install name
+damage uninstall name
+damage list
+```
+
+Packages auto-load on every run. No import needed.
+
+---
+
 ## Errors
 
-When something goes wrong the program stops immediately:
 ```
 ERROR:
 line.N, error "description"
@@ -376,42 +409,49 @@ line.N, error "description"
 Save to logs? [y/n]
 ```
 
-Logs go to `~/damage/logs/damage.log`.
+Logs saved to `~/damage/logs/damage.log`.
 
 ---
 
-## CLI flags
+## CLI
 
 ```
-damage <file.dmg>           run a program
-damage --help               full syntax guide
-damage --version            show version
-damage --check <file.dmg>   check syntax without running
-damage --debug <file.dmg>   show tokens and AST, then run
-damage --quiet <file.dmg>   suppress output except errors
-damage --log                always save errors to logs
-damage --no-log             never save errors to logs
-damage --output <dir>       custom output directory
-damage --list-funcs         list all saved user functions
-damage --clear-logs         delete all logs
-damage --clear-funcs        delete all user functions
+damage <file.damg>       run a program
+damage --help            full syntax guide
+damage --version         show version
+damage --check           syntax check without running
+damage --debug           show tokens then run
+damage --log             always save errors
+damage --no-log          never save errors
+damage --list-funcs      list saved user functions
+damage --clear-logs      delete all logs
+damage --clear-funcs     delete all user functions
 ```
 
 ---
 
 ## Built-in functions
 
+| Function | What it does |
 |----------|-------------|
+| `print` | output text |
 | `var` | declare variables |
+| `math` | math operators and evaluation |
 | `loop` | repeat a block |
+| `user` | get input |
 | `random` | pick randomly |
+| `output` | write to file |
 | `gui` | open a window |
+| `dyn` | reassign variables |
 | `addfunc` | define a function |
+| `text` | string operations |
 | `fetch` | pipe data anywhere |
+| `enc` / `dec` | encrypt and decrypt |
+| `clear` | clear the terminal |
 | `import` | import another file |
 
 ---
 
 ## Version
 
-**v6.0**
+**v8.0** — Native Rust binary. 14MB. Zero dependencies.
