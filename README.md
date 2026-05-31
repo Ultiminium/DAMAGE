@@ -454,4 +454,12 @@ damage --clear-funcs     delete all user functions
 
 ## Version
 
-**v8.0** — Native Rust binary. 14MB. Zero dependencies.
+**v8.3**
+
+## Links
+**Website**
+https://damage-website.vercel.app
+**Website Repo**
+https://github.com/Ultiminium/DAMAGE-Website
+**Package Repo**
+https://github.com/Ultiminium/DAMAGE-Packages
