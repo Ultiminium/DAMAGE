@@ -1,44 +1,40 @@
 # DAMAGE
 
-DAMAGE is a programming language designed around how you naturally think. No type errors. No confusing syntax. Just write what you mean.
+**DAMAGE** is a coding language written around how I think, which is very dumb. Because I think stupidly.  Which means anyone can learn **DAMAGE**.
 
 Programs are written in `.damg` files and run with the `damage` command.
 
+```
+| hello world
+@print+
+     +Hello, world!-
+@-
+```
+
 ---
 
-## Installing
+## Download
 
-### Standalone binary (recommended)
-Download the binary from [Releases](https://github.com/Ultiminium/DAMAGE/releases), then:
+**[damage-website.vercel.app/download.html](https://damage-website.vercel.app/download.html)**
+
+Or grab the latest release directly from [GitHub Releases](https://github.com/Ultiminium/DAMAGE/releases).
+
+---
+
+## Quick install — Linux
 
 ```bash
+# Download and extract the binary, then:
 chmod +x damage
 sudo mv damage /usr/local/bin/damage
-```
-
-### Build from source
-Requires [Rust](https://rustup.rs):
-
-```bash
-git clone https://github.com/Ultiminium/DAMAGE
-cd DAMAGE/damage-rs
-cargo build --release
-sudo mv target/release/damage /usr/local/bin/damage
-```
-
----
-
-## Running a program
-
-```bash
-damage yourfile.damg
+damage --version
 ```
 
 ---
 
 ## The basics
 
-Every block opens with `@functionname+` and closes with `@-`. Content inside is indented 5 spaces. Anything after `|` is a comment.
+Every block opens with `@functionname+` and closes with `@-`. Content is indented 5 spaces. Anything after `|` is a comment.
 
 ```
 | this is a comment
@@ -53,41 +49,19 @@ Every block opens with `@functionname+` and closes with `@-`. Content inside is 
 
 ```
 @var+
-     name+User-
-     score+0-
-     isAlive=1
+     name+Alice-
+     score+100-
+     alive=1
 @-
 ```
 
-Booleans use `=` instead of `+value-`. `1` is on, `0` is off.
-
-To change a variable mid-program:
+Booleans use `=`. Change with `@dyn`:
 
 ```
 @dyn,var+
 @dyn:(score) = (score)+10
 @-
 ```
-
----
-
-## Referencing variables
-
-The position of `var` in the function list determines how many parens you use:
-
-```
-@print,var+
-     +(name) scored (score) points-
-@-
-```
-
-```
-@print,math,var+
-     +((score)) (+) 1-
-@-
-```
-
-`var` at position 2 → `((score))`. `math` at position 1 → `(+)`.
 
 ---
 
@@ -103,19 +77,11 @@ The position of `var` in the function list determines how many parens you use:
 @-
 
 @print,math+
-     +2 (+) 2 = 4-
-@-
-```
-
-Inline math with `%` — define between `%%`, result placed at the next `%`:
-
-```
-@print,math+
      +2^10 = %2^10%? The answer is %-
 @-
 ```
 
-Random OR — picks one randomly:
+Random OR — picks one:
 
 ```
 @+Good job!-?@+Well done!-?@+Amazing!-
@@ -131,11 +97,7 @@ Random OR — picks one randomly:
 @-
 ```
 
-Operators: `+ - * / ^`
-
-Exponents are right-to-left: `2^3^2 = 512` (= 2^9)
-
-Results above 10^10 display in scientific notation. Results too large display as `too large to display`.
+Operators: `+ - * / ^`. Exponents are right-to-left: `2^3^2 = 512`.
 
 ---
 
@@ -156,13 +118,7 @@ other,
 @-
 ```
 
-Operators: `=` `<` `>` `~` (not equal)
-
-Chained AND:
-
-```
-if, (score) = 100,(lives) > 0
-```
+Operators: `=` `<` `>` `~` (not equal). Chain AND with commas: `if, (a)=1,(b)=2`
 
 ---
 
@@ -175,29 +131,11 @@ if, (score) = 100,(lives) > 0
 @-
 ```
 
-Variable loop count:
-
-```
-@loop,print+
-     +Hello!-
-@loop:(times)
-@-
-```
-
-`@loop:0` skips entirely.
+Variable count: `@loop:(times)`. Zero skips entirely.
 
 ---
 
 ## User input
-
-```
-@user,print+
-     +What is your name?-
-@var:create+name-
-@-
-```
-
-With validation — re-prompts until valid:
 
 ```
 @user,print+
@@ -207,7 +145,7 @@ With validation — re-prompts until valid:
 @-
 ```
 
-`"n"` = numbers only, `"l"` = letters only.
+`"n"` = numbers only. `"l"` = letters only. Re-prompts until valid.
 
 ---
 
@@ -241,20 +179,16 @@ With validation — re-prompts until valid:
 @-
 ```
 
-Functions are saved as `.func` files. Variables are shared with the caller.
-
 ---
 
 ## Fetch
 
-Pipe data from anywhere to anywhere using `$`:
+Pipe data from anywhere to anywhere:
 
 ```
 @fetch+
 fetch.+@var/score-$+@var/backup-
 fetch.+gui:1-$+@var/input-
-fetch.+@var/name-$+/path/out.txt-
-fetch.+/path/in.txt-$+@var/data-
 @-
 ```
 
@@ -263,15 +197,11 @@ fetch.+/path/in.txt-$+@var/data-
 ## Block chaining
 
 ```
-if, pressable+Calculate-:true
-     @fetch+
-     fetch.+gui:1-$+@var/expression-
+@dyn,var+
+@dyn:(n) = (n)+1
 @-&
-@math,var+
-     +(expression)-
-@-&
-@fetch+
-     fetch.+@var/__mathresult__-$+gui:2-
+@print,var+
+     +(n)-
 @-#
 ```
 
@@ -285,58 +215,58 @@ if, pressable+Calculate-:true
 | get length
 @text+
 @text:length+@var/name-
-@var:create+namelen-
+@var:create+len-
 @-
 
-| capitalize letter at position
+| capitalize
 @text+
 text:capital"@var/name/s":1
 @-
 
-| lowercase letter at position
-@text+
-text:lower"@var/name/S":1
-@-
-
-| error if exceeds limit
-@text+
-text:maxlength"15"
-@-
-
-| check if number or letters
+| extract numbers from mixed string
 @text+
 @text:length+@var/input-
 text:check"n"
-@var:create+isnum-
+@var:create+nums-
+@-
+
+| extract letters from mixed string
+@text+
+@text:length+@var/input-
+text:check"l"
+@var:create+letters-
 @-
 ```
+
+`text:check"n"` extracts numeric characters. `text:check"l"` extracts letter characters. Returns `0` if none found.
 
 ---
 
 ## Encryption
 
+DAMAGE uses **ChaCha20-Poly1305 + custom XOR/shuffle** — industry-grade layered encryption. The password is never stored.
+
 ```
-| one-way (no decryption)
+| two-way encryption
 @enc,var+
-     +(password)-
+     +(secret)-
+@enc:password"mykey"
 @var:create+encrypted-
 @-
 
-| two-way
-@enc,var+
-     +(password)-
-@enc:password"mykey"
-@var:create+secured-
+@dec,var+
+     @dec:@var/encrypted/mykey
+@var:create+decrypted-
 @-
 
-| decrypt
-@dec,var+
-     @dec:@var/secured/mykey
-@var:create+original-
+| one-way (no decryption)
+@enc,var+
+     +(password)-
+@var:create+hashed-
 @-
 ```
 
-The password is never stored.
+Wrong password → `[DECRYPT ERROR: wrong password or corrupted data]`
 
 ---
 
@@ -353,8 +283,6 @@ if, pressable+Click Me-:true
      @+Button clicked!-
 @-
 ```
-
-Coordinates: origin bottom-left, X right, Y up.
 
 ---
 
@@ -390,26 +318,15 @@ Coordinates: origin bottom-left, X right, Y up.
 
 ## Packages
 
-```
-damage install name
-damage uninstall name
+```bash
+damage install dice
 damage list
+damage uninstall dice
 ```
 
 Packages auto-load on every run. No import needed.
 
----
-
-## Errors
-
-```
-ERROR:
-line.N, error "description"
-
-Save to logs? [y/n]
-```
-
-Logs saved to `~/damage/logs/damage.log`.
+Available packages: `math` `string` `validate` `dice` `cards` `format` `table` `color`
 
 ---
 
@@ -421,11 +338,14 @@ damage --help            full syntax guide
 damage --version         show version
 damage --check           syntax check without running
 damage --debug           show tokens then run
-damage --log             always save errors
+damage --log             always save errors to log
 damage --no-log          never save errors
 damage --list-funcs      list saved user functions
 damage --clear-logs      delete all logs
 damage --clear-funcs     delete all user functions
+damage install <name>    install a package
+damage uninstall <name>  uninstall a package
+damage list              list installed packages
 ```
 
 ---
@@ -436,7 +356,7 @@ damage --clear-funcs     delete all user functions
 |----------|-------------|
 | `print` | output text |
 | `var` | declare variables |
-| `math` | math operators and evaluation |
+| `math` | math operators |
 | `loop` | repeat a block |
 | `user` | get input |
 | `random` | pick randomly |
@@ -452,19 +372,28 @@ damage --clear-funcs     delete all user functions
 
 ---
 
-## Version
+## DAMAGE Studio
 
-**v8.3**
+DAMAGE Studio is the official IDE for DAMAGE. Write, run, and manage `.damg` programs with syntax highlighting, integrated output, package management, and built-in documentation.
+
+**[Download DAMAGE Studio](https://damage-website.vercel.app/download.html)**
+
+---
 
 ## Links
 
-**Website**
-https://damage-website.vercel.app
+- **Website** — [damage-website.vercel.app](https://damage-website.vercel.app)
+- **Documentation** — [damage-website.vercel.app/docs.html](https://damage-website.vercel.app/docs.html)
+- **Releases** — [github.com/Ultiminium/DAMAGE/releases](https://github.com/Ultiminium/DAMAGE/releases)
+- **Package registry** — [github.com/Ultiminium/DAMAGE-Packages](https://github.com/Ultiminium/DAMAGE-Packages)
+- **Website repo** — [github.com/Ultiminium/DAMAGE-Website](https://github.com/Ultiminium/DAMAGE-Website)
 
+---
 
-**Website Repo**
-https://github.com/Ultiminium/DAMAGE-Website
+## License
 
+MIT — free to use, modify, and distribute.
 
-**Package Repo**
-https://github.com/Ultiminium/DAMAGE-Packages
+---
+
+*DAMAGE v8.3 — Native Rust binary. Zero dependencies.*
